@@ -12,6 +12,7 @@
     "@nuxt/devtools": "latest",
     "@types/lodash": "^4.14.195",
     "@types/node": "^18",
+    "@types/qs": "^6.9.7",
     "axios": "^1.4.0",
     "lodash": "^4.17.21",
     "nuxt": "^3.5.2",

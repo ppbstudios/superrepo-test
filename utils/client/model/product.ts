@@ -1,11 +1,9 @@
-import typeProduct from "~/utils/client/types/product";
-import _ from "lodash";
-import api from "~/utils/client/api";
+import typeProduct from '~/utils/client/types/product';
+import _ from 'lodash';
+import api from '~/utils/client/api';
 
 export class Product {
-  private json:typeProduct;
-
-  constructor(json: typeProduct) {
+  constructor(private json: typeProduct) {
     this.json = json;
   }
 
@@ -23,32 +21,35 @@ export class Product {
 }
 
 export class Products {
-  // private json:any[];
-  // private products:Product[];
+  private json: any[];
+  private products: Product[];
 
-  constructor(json:Product[]) {
-    // this.json = json;
-    // _.each(this.json, (item) => {
-    //   this.products.push(new Product(item));
-    // });
+  constructor(json: typeProduct[]) {
+    this.json = json;
+    this.products = [];
+    _.each(this.json, (item) => {
+      this.products.push(new Product(item));
+    });
   }
 
-  // get byId (id:number)  {
-  //   const product = _.find(this.products, (p) => {
-  //     return p.id === id;
-  //   });
-  //
-  //   if (product) {
-  //     return product;
-  //   } else {
-  //     const newProduct = api.products.byId(id);
-  //     return newProduct;
-  //   }
-  // }
-  //
-  // get byHandle(handle:string)  {
-  //    _.find(this.products, (p) => {
-  //     return p.handle === handle;
-  //   });
-  // }
+  // getter 함수의 경우 파라미터를 받을 수 없음. (캐싱때문인거같음)
+  byId(id: number) {
+    const product = _.find(this.products, (p) => {
+      return p.id === id;
+    });
+
+    if (product) {
+      return product;
+    } else {
+      const newProduct = api.products.byId(id);
+      return newProduct;
+    }
+  }
+
+  byHandle(handle: string) {
+    _.find(this.products, (p) => {
+      return p.handle === handle;
+    });
+    return '';
+  }
 }
