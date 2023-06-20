@@ -1,0 +1,3 @@
+class Franchise {}
+
+class Franchises {}

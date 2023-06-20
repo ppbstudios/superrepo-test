@@ -10,7 +10,12 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
+    "@types/lodash": "^4.14.195",
     "@types/node": "^18",
-    "nuxt": "^3.5.2"
-  }
+    "axios": "^1.4.0",
+    "lodash": "^4.17.21",
+    "nuxt": "^3.5.2",
+    "qs": "^6.11.2"
+  },
+  "dependencies": {}
 }
