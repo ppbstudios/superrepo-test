@@ -1,21 +1,12 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-const sitename = process.env.VUE_APP_APP_KEY;
+const sitename = process.env.VUE_APP_APP_KEY || 'site';
 
-const routes = (sitename: string) => [
+// yarn install error 방지
+const site = [
   {
     name: `${sitename}Home`,
     path: "/",
     file: `~/${sitename}/home.vue`,
-  },
-  {
-    name: `${sitename}Chuu1`,
-    path: "/chuu1",
-    file: `~/${sitename}/chuu1.vue`,
-  },
-  {
-    name: `${sitename}Winc1`,
-    path: "/winc1",
-    file: `~/${sitename}/winc1.vue`,
   },
 ];
 
@@ -46,7 +37,7 @@ const chuulens = [
   },
 ];
 
-const allRoutes = { chuulens, winc }
+const allRoutes = { site, chuulens, winc }
 
 export default defineNuxtConfig({
   devtools: { enabled: true },
