@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import qs from 'qs';
 import { Product, Products } from '~/utils/client/model/product';
-import typeProduct from '~/utils/client/types/product';
+import { JsonProduct, typeProduct } from '~/utils/client/types/product';
 axios.defaults.withCredentials = true;
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -70,7 +70,7 @@ const api = {
       params.q ||= {};
       params.q['store_id_in'] = ['chuulens'];
       try {
-        const res: AxiosResponse<ResponseType<typeProduct>> = await myAxios.get(
+        const res: AxiosResponse<ResponseType<JsonProduct>> = await myAxios.get(
           `/v1/ppb/products?${toq(params)}`
         );
         console.log();
@@ -83,7 +83,7 @@ const api = {
     },
     byId: async (id: string | number) => {
       try {
-        const res: AxiosResponse<typeProduct> = await myAxios.get(
+        const res: AxiosResponse<JsonProduct> = await myAxios.get(
           `/v1/ppb/products/${id}`
         );
         return new Product(res.data);

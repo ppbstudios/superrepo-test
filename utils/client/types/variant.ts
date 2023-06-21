@@ -1,0 +1,37 @@
+export interface typeVariant {
+  id: number;
+  title: string;
+  sku: string | null;
+  position: number;
+  option1: string;
+  option2: string;
+  option3: null;
+  option4: null;
+  barcode: null;
+  inventory_quantity: number;
+  compare_at_price_krw: string;
+  price1_krw: number | null;
+  price2_krw: number | null;
+  price3_krw: number | null;
+  price4_krw: number | null;
+  price5_krw: number | null;
+  compare_at_price_jpy: string;
+  price1_jpy: number | null;
+  price2_jpy: number | null;
+  price3_jpy: number | null;
+  price4_jpy: number | null;
+  price5_jpy: number | null;
+  compare_at_price_usd: string;
+  price1_usd: number | null;
+  price2_usd: number | null;
+  price3_usd: number | null;
+  price4_usd: number | null;
+  price5_usd: number | null;
+  compare_at_price2: string;
+  price: number;
+  compare_at_price: string;
+  price2: number | null;
+  price3: number | null;
+  price4: number | null;
+  price5: number | null;
+}
