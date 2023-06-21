@@ -1,21 +1,4 @@
 import { typeVariant } from '~/utils/client/types/variant';
-
-export type typeProduct = {
-  id: number;
-  channel_id: string;
-  store_id: string;
-  shopify_id: string;
-  body_html: string;
-  vendor: string;
-  title: string;
-  product_type: string;
-  tags: string[];
-  collection_handles: string[];
-  collection_ids: number[];
-  handle: string;
-  dia_inner: number;
-};
-
 // api 로 받아온 json 데이터 타입
 export interface JsonProduct {
   id: number;

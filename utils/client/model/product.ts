@@ -1,7 +1,7 @@
-import { typeProduct } from '~/utils/client/types/product';
 import _ from 'lodash';
 import api from '~/utils/client/api';
 import { JsonProduct } from '~/utils/client/types/product';
+import { Variants } from './variant';
 
 export class Product {
   constructor(private json: JsonProduct) {
@@ -44,12 +44,8 @@ export class Product {
     return this.json['lens_count'];
   }
 
-  get variants(){
-  //   return new Variants(
-  //       product: this,
-  //       jsonArray: this.json['variants']
-  // );
-    return ;
+  get variants() {
+    return new Variants(this, this.json['variants']);
   }
 
   //   Options get options => Options(json['options']);
@@ -99,7 +95,7 @@ export class Product {
     }
 
     if (!_.isEmpty(this.images)) {
-      this.images.forEach((image) => {
+      _.each(this.images, (image) => {
         detailThumbnails.push({
           src: image['src'],
           overlays: image['overlays'] ?? [],
@@ -263,15 +259,14 @@ export class Product {
   isDraft() {
     return this.status === 'draft';
   }
-  //
   isLens() {
-    this.productType == '1 month' || this.json['product_type'] == '1 day';
+    return (
+      this.productType === '1 month' || this.json['product_type'] === '1 day'
+    );
   }
-  //
   isEtc() {
     return this.productType == 'ETC';
   }
-  //
   getLensType() {
     switch (this.productType) {
       case '1 month':
@@ -284,7 +279,6 @@ export class Product {
         return '';
     }
   }
-  //
   getColorKr() {
     const _allColors = {
       black: '블랙',
@@ -358,13 +352,10 @@ export class Product {
   // }
 }
 
-interface ProductsHash {
-  [key: string]: Product;
-}
 export class Products {
   private json: JsonProduct[];
   private products: Product[];
-  private _productsById: ProductsHash;
+  private _productsById: Hash<Product>;
   constructor(json: JsonProduct[]) {
     this.json = json;
     this.products = [];

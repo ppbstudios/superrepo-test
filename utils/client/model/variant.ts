@@ -1,125 +1,162 @@
 import _ from 'lodash';
-import api from '~/utils/client/api';
 import { typeVariant } from '~/utils/client/types/variant';
 import { Product } from '~/utils/client/model/product';
+import { parsePrice } from '~/utils/application_helper';
 //
 
 export class Variant {
-  constructor() {}
-}
-
-// class Variant extends BaseModel {
-//   Variant({
-//             @required jsonObject,
-//             @required this.product,
-//           }) {
-//     json = jsonObject;
-//   }
-//
-//   final Product product;
-//   int get id => json['id'];
-//   String get title => json['title'] ?? '';
-//   int get price => price1; // 1팩 가격
-//   int get price1 => parsePrice(json['price1_krw'] ?? 9876543210); // 1팩 가격
-//   int get price2 => parsePrice(json['price2_krw'] ?? 9876543210); // 2팩 가격
-//   int get price3 => parsePrice(json['price3_krw'] ?? 9876543210); // 3팩 가격
-//   int get price4 => parsePrice(json['price4_krw'] ?? 9876543210); // 4팩 가격
-//   int get price5 => parsePrice(json['price5_krw'] ?? 9876543210); // 5팩 가격
-//   String get sku => json['sku'] ?? '';
-//   int get position => json['position'];
-//   int get compareAtPrice => parsePrice(json['compare_at_price_krw'] ?? 9876543210);
-//
-//   String get option => product.isLens() ? json['option2'] : json['option1'];
-//   String get option1 => json['option1'] ?? '';
-//   String get option2 => json['option2'] ?? '';
-//   String get option3 => json['option3'] ?? '';
-//   String get option4 => json['option4'] ?? '';
-//
-//   int get barcode => json['barcode'] ?? '';
-//   int get inventoryQuantity => json['inventory_quantity'] ?? -1;
-// }
-
-export class Variants {
+  private json: typeVariant;
   private product: Product;
-  constructor(product: Product, jsonArray: any) {
+  constructor(variantJson: typeVariant, product: Product) {
+    this.json = variantJson;
     this.product = product;
   }
+  get id() {
+    return this.json['id'];
+  }
+  get title() {
+    return this.json['title'] ?? '';
+  }
+  get price() {
+    return this.price1; // 1팩 가격
+  }
+
+  get price1() {
+    return parsePrice(this.json['price1_krw']) ?? 9876543210; // 1팩 가격
+  }
+
+  get price2() {
+    return parsePrice(this.json['price2_krw']) ?? 9876543210; // 2팩 가격
+  }
+
+  get price3() {
+    return parsePrice(this.json['price3_krw']) ?? 9876543210; // 3팩 가격
+  }
+
+  get price4() {
+    return parsePrice(this.json['price4_krw']) ?? 9876543210; // 4팩 가격
+  }
+
+  get price5() {
+    return parsePrice(this.json['price5_krw']) ?? 9876543210; // 5팩 가격
+  }
+
+  get sku() {
+    return this.json['sku'] ?? '';
+  }
+
+  get position(): number {
+    return this.json['position'];
+  }
+
+  get compareAtPrice() {
+    return parsePrice(this.json['compare_at_price_krw']) ?? 9876543210;
+  }
+
+  get option(): string {
+    return this.product.isLens() ? this.json['option2'] : this.json['option1'];
+  }
+
+  get option1(): string {
+    return this.json['option1'] ?? '';
+  }
+
+  get option2(): string {
+    return this.json['option2'] ?? '';
+  }
+
+  get option3(): string {
+    return this.json['option3'] ?? '';
+  }
+
+  get option4(): string {
+    return this.json['option4'] ?? '';
+  }
+
+  get barcode(): number | string {
+    return this.json['barcode'] ?? '';
+  }
+
+  get inventoryQuantity(): number {
+    return this.json['inventory_quantity'] ?? -1;
+  }
 }
-// class Variants extends BaseModel {
-//   final Product product;
-//   List<Variant> _variants = [];
-//   Map<int, Variant> _variantsById = {};
-//
-//   Variants({
-//              @required this.product,
-//              jsonArray,
-//            }) {
-//     if (jsonArray is Variants) {
-//       // logger.d("already product type");
-//       json = jsonArray.json;
-//     } else if (jsonArray != null) {
-//       json = jsonArray;
-//     }
-//   }
-//
-//   set json(jsonArray) {
-//     super.json = jsonArray;
-//     json.forEach((variantJson) {
-//       Variant variant = Variant(
-//           product: product,
-//           jsonObject: variantJson,
-//     );
-//       _variants.add(variant);
-//       _variantsById[variant.id] = variant;
-//     });
-//   }
-//
-//   List<Variant> get items => _variants;
-//
-//   List<int> get ids => _variantsById.keys.toList();
-//
-//   Variant byId(variantsId) => _variantsById[variantsId];
-//
-//   void add(Variant variant) {
-//   _variants.add(variant);
-//   _variantsById[variant.id] = variant;
-// }
-//
-// void addAll(List<Variant> variants) {
-//   _variants.addAll(variants);
-//   variants.forEach((element) {
-//     _variantsById[element.id] = element;
-//   });
-// }
-//
-// /// 옵션값(option1~4)을 매칭해서 일치하는 variant list 를 반환
-// ///
-// /// [option1] : lens: color 색상, etc: option 옵션
-// ///
-// /// [option2] : sph 근시도수
-// ///
-// /// [option3] : cyl 난시도수
-// ///
-// /// [option4] : axis 축
-// Variants getVariantsByOptions({option1, option2, option3, option4}) {
-//   List<Variant> filtered = [];
-//
-//   for (var v in items) {
-//     if (option1 != null && v.option1 != option1) {
-//       continue;
-//     }
-//     if (option2 != null && v.option2 != option2) {
-//       continue;
-//     }
-//     if (option3 != null && v.option3 != option3) {
-//       continue;
-//     }
-//     if (option4 != null && v.option4 != option4) {
-//       continue;
-//     }
-//     filtered.add(v);
-//   }
-//   final res = Variants(product: product);
-//   res.addAll(filtered);
-//   return res;
-// }
+
+export class Variants {
+  private readonly product: Product;
+  private jsonArray: typeVariant[];
+  private variants: Variant[];
+  private variantsById: Hash<Variant>;
+  constructor(product: Product, jsonArray: typeVariant[]) {
+    this.product = product;
+    this.jsonArray = jsonArray;
+    this.variants = [];
+    this.variantsById = {};
+  }
+  set json(jsonArray: typeVariant[]) {
+    this.variants = [];
+    this.variantsById = {};
+    _.forEach(this.json, (variantJson) => {
+      const variant = new Variant(variantJson, this.product);
+      this.variants.push(variant);
+      this.variantsById[variant.id] = variant;
+    });
+  }
+
+  get items() {
+    return this.variants;
+  }
+
+  get ids() {
+    return Object.keys(this.variantsById);
+  }
+
+  byId(variantsId: string | number) {
+    return this.variantsById[variantsId];
+  }
+
+  add(variant: Variant) {
+    this.variants.push(variant);
+    this.variantsById[variant.id] = variant;
+  }
+
+  addAll(variants: Variant[]) {
+    // 변수명 확인.  this.variants, 파라미터 인자 variants
+    this.variants.push(...variants);
+    _.forEach(variants, (element) => {
+      this.variantsById[element.id] = element;
+    });
+  }
+
+  // 옵션값(option1~4)을 매칭해서 일치하는 variant list 를 반환
+  // [option1] : lens: color 색상, etc: option 옵션
+  // [option2] : sph 근시도수
+  // [option3] : cyl 난시도수
+  // [option4] : axis 축
+
+  //!  옵션타입 및 로직 이해하고와서 다시작성해야함
+  // getVariantsByOptions({ option1, option2, option3, option4 }) {
+  //   const filtered = [];
+
+  //   for (let v of this.items) {
+  //     if (option1 != null && v.option1 != option1) {
+  //       continue;
+  //     }
+  //     if (option2 != null && v.option2 != option2) {
+  //       continue;
+  //     }
+  //     if (option3 != null && v.option3 != option3) {
+  //       continue;
+  //     }
+  //     if (option4 != null && v.option4 != option4) {
+  //       continue;
+  //     }
+  //     filtered.push(v);
+  //   }
+  //     밑에 로직 이해 필요. 기껏 필터 해놓고 왜 다시 새로만들고 보내는건지 잘모르겠음.
+  //     새로 뽑아서 deep copy 를 진행하는건가?
+  //   const res = new Variants(product: product);
+  //   res.addAll(filtered);
+  //   return res;
+  // }
+}
