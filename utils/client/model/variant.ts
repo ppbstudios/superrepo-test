@@ -2,6 +2,7 @@ import _ from 'lodash';
 import { typeVariant } from '~/utils/client/types/variant';
 import { Product } from '~/utils/client/model/product';
 import { parsePrice } from '~/utils/application_helper';
+import { JsonProduct } from '~/utils/client/types/product';
 //
 
 export class Variant {
@@ -11,37 +12,37 @@ export class Variant {
     this.json = variantJson;
     this.product = product;
   }
-  get id() {
+  get id(): number {
     return this.json['id'];
   }
-  get title() {
+  get title(): string {
     return this.json['title'] ?? '';
   }
-  get price() {
+  get price(): number {
     return this.price1; // 1팩 가격
   }
 
-  get price1() {
+  get price1(): number {
     return parsePrice(this.json['price1_krw']) ?? 9876543210; // 1팩 가격
   }
 
-  get price2() {
+  get price2(): number {
     return parsePrice(this.json['price2_krw']) ?? 9876543210; // 2팩 가격
   }
 
-  get price3() {
+  get price3(): number {
     return parsePrice(this.json['price3_krw']) ?? 9876543210; // 3팩 가격
   }
 
-  get price4() {
+  get price4(): number {
     return parsePrice(this.json['price4_krw']) ?? 9876543210; // 4팩 가격
   }
 
-  get price5() {
+  get price5(): number {
     return parsePrice(this.json['price5_krw']) ?? 9876543210; // 5팩 가격
   }
 
-  get sku() {
+  get sku(): string {
     return this.json['sku'] ?? '';
   }
 
@@ -49,7 +50,7 @@ export class Variant {
     return this.json['position'];
   }
 
-  get compareAtPrice() {
+  get compareAtPrice(): number {
     return parsePrice(this.json['compare_at_price_krw']) ?? 9876543210;
   }
 
@@ -87,12 +88,22 @@ export class Variants {
   private jsonArray: typeVariant[];
   private variants: Variant[];
   private variantsById: Hash<Variant>;
+  static instance: Variants | void;
+
   constructor(product: Product, jsonArray: typeVariant[]) {
     this.product = product;
     this.jsonArray = jsonArray;
     this.variants = [];
     this.variantsById = {};
   }
+
+  static getVariantsInstance(product: Product, jsonArray: typeVariant[]) {
+    if (!Variants.instance) {
+      Variants.instance = new Variants(product, jsonArray);
+    }
+    return Variants.instance;
+  }
+
   set json(jsonArray: typeVariant[]) {
     this.variants = [];
     this.variantsById = {};
@@ -103,15 +114,15 @@ export class Variants {
     });
   }
 
-  get items() {
+  get items(): Variant[] {
     return this.variants;
   }
 
-  get ids() {
-    return Object.keys(this.variantsById);
+  get ids(): number[] {
+    return Object.keys(this.variantsById).map(Number);
   }
 
-  byId(variantsId: string | number) {
+  byId(variantsId: string | number): Variant {
     return this.variantsById[variantsId];
   }
 
@@ -153,8 +164,8 @@ export class Variants {
   //     }
   //     filtered.push(v);
   //   }
-  //     밑에 로직 이해 필요. 기껏 필터 해놓고 왜 다시 새로만들고 보내는건지 잘모르겠음.
-  //     새로 뽑아서 deep copy 를 진행하는건가?
+  //     밑에 로직 이해 필요. 조건 맞는 요소 필터링 해놓고 왜 다시 새로만들고 보내는건지 잘모르겠음.
+  //     deep copy 를 진행하는건가?
   //   const res = new Variants(product: product);
   //   res.addAll(filtered);
   //   return res;

@@ -1,86 +1,101 @@
 import _ from 'lodash';
 import api from '~/utils/client/api';
-import { JsonProduct } from '~/utils/client/types/product';
+import { JsonProduct, Image, Color } from '~/utils/client/types/product';
 import { Variants } from './variant';
 
 export class Product {
-  constructor(private json: JsonProduct) {
+  private json: JsonProduct;
+  constructor(json: JsonProduct) {
     this.json = json;
   }
 
-  get isFavorite(): boolean {
+  get isFavorite() {
     // GlobalData.isFavoriteProduct(this.json['id'])  일단 주석
     return true;
   }
   get id(): number {
     return this.json.id;
   }
-  // int get price => variants?.items?.first?.price ?? 420 * 1000;
-  // get priceGroup => parsePrice(myPriceGroup.byId(id)) ?? price;
-  // int get compareAtPrice => variants.items.first.compareAtPrice;
+
+  get price(): number {
+    return this.variants?.items[0]?.price ?? 420 * 1000;
+  }
+
+  // get priceGroup(){
+  //myPriceGroup 찾아서 적용해야함.
+  // return parsePrice(myPriceGroup.byId(id)) ?? price;
+  // }
+
+  get compareAtPrice(): number {
+    return this.variants.items[0]?.compareAtPrice;
+  }
+
   get handle(): string {
     return this.json.handle;
   }
 
-  get diaInner() {
+  get diaInner(): number {
     return this.json['dia_inner'] || 0.0;
   }
-  get diaOuter() {
+  get diaOuter(): number {
     return this.json['dia_outer'] || 0.0;
   }
-  get water() {
+  get water(): number {
     return this.json['water'];
   }
 
-  get baseCurve() {
+  get baseCurve(): number {
     return this.json['base_curve'];
   }
   //
-  get material() {
+  get material(): string {
     return this.json['material'];
   }
   //
-  get lensCount() {
+  get lensCount(): number {
     return this.json['lens_count'];
   }
 
-  get variants() {
-    return new Variants(this, this.json['variants']);
+  get variants(): Variants {
+    return Variants.getVariantsInstance(this, this.json['variants']);
+    // return new Variants(this, this.json['variants']);
   }
 
-  //   Options get options => Options(json['options']);
+  // Options get options => Options(json['options']);
   //
-  //   get options1 => json['variants'].map((v) => v['option1']).toList(); // ETC 상품. 렌즈상품의 powers 대신에 사용
-  //
-  //   get powers => json['variants'].map((v) => v['option2']).toList();
-  //
-  get images() {
+  get options1(): string[] {
+    return this.json['variants'].map((v) => v['option1']); // ETC 상품. 렌즈상품의 powers 대신에 사용
+  }
+  get powers(): string[] {
+    return this.json['variants'].map((v) => v['option2']);
+  }
+  get images(): Image[] {
     return this.json['images'] ?? [];
   }
   //
-  get imagesSrc() {
+  get imagesSrc(): string[] {
     return this.json['images'].map((v) => v['src']);
   }
   //
-  get ppbBrandId() {
+  get ppbBrandId(): number {
     return this.json['ppb_brand_id'];
   }
   //
-  get image() {
+  get image(): Image {
     return this.json['image'];
   }
   //
-  get imageSrc() {
+  get imageSrc(): string {
     return this.json['image']['src'];
   }
   //
-  get thumbnail() {
-    if (this.json['image']) {
+  get thumbnail(): string {
+    if (this.json.hasOwnProperty('image')) {
       const image = this.json['image'];
-      if (image['size256']) {
+      if (image.hasOwnProperty('size256')) {
         return image['size256'];
       }
-      if (image['src']) {
+      if (image.hasOwnProperty('src')) {
         return image['src'];
       }
     }
@@ -118,66 +133,66 @@ export class Product {
   //   // get detailVideo => 'https://cdn-dev.winc.app/uploads/ppb/file/file/110/%E1%84%92%E1%85%A1%E1%86%AB%E1%84%80%E1%85%B3%E1%86%AF_video_example_MP4_1920_18MG_30s-d7a3de.mp4';
   //   // cdn 한글 파일 명 18MB 1920x1080 30s MP4
   //
-  get thumbnailVideo() {
+  get thumbnailVideo(): string {
     return this.json['thumbnail_video'] ?? '';
   }
 
-  get detailVideo() {
+  get detailVideo(): string {
     return this.json['detail_video'] ?? '';
   }
   //
-  get detailImagesSrc() {
+  get detailImagesSrc(): string[] {
     return this.json['detail_images']
       .map((v) => {
         if (v['src'] ?? false) return v['src'];
         return '';
       })
       .filter((v) => v !== null && v !== '');
-    // .where((src) => src != null && src != '') // 빈 값이거나 null 일 경우 이미지 보여주지 않음
   }
 
   //
-  get title() {
+  get title(): string {
     return this.json['title'];
   }
   //
 
   //
-  get status() {
+  get status(): string {
     return this.json['status'];
   }
   //
-  get storeId() {
+  get storeId(): string {
     return this.json['store_id'];
   }
   //
+  // 마이브랜드 없음
   // String get brandName => myBrands.byStoreId(storeId)?.brandName ?? '';
   //
-  get lensPatternImage() {
+  get lensPatternImage(): string {
     return this.json['lens_pattern_image'];
   }
   //
-  get color() {
+  get color(): Color {
     return this.json['color'];
   }
   //
-  get favoriteCount() {
+  get favoriteCount(): number {
     return this.json['favorite_count'];
   }
   //
-  get productType() {
+  get productType(): string {
     return this.json['product_type'];
   }
   //
-  get reviewNumber() {
+  get reviewNumber(): string {
     return this.json['product_type'];
   }
   //
-  get reviewPoint() {
+  get reviewPoint(): number {
     return parseFloat(this.json['review_point']);
   }
   //
-  get reviewCount() {
+  get reviewCount(): number {
     return this.json['review_count'];
   }
   //
@@ -185,55 +200,59 @@ export class Product {
     return this.json['extra'];
   }
   //
-  get tags() {
+  get tags(): string[] {
     return this.json['tags'];
   }
   //
-  get collectionIds() {
+  get collectionIds(): number[] {
     return this.json['collection_ids'].slice();
   }
   //
-  get orderCount() {
+  get orderCount(): number {
     return this.json['order_count'];
   }
   //
-  get url() {
+  get url(): string {
     return this.json['url'] ?? '';
   }
 
+  // 프라이스그룹 없음
   // isDiscount() {
   //   return compareAtPrice > priceGroup;
   // }
-  //
-  // Future<void> refresh() async {
-  //   var res = await client.getProductById(id);
+
+  /// api 로직인거같음
+  // async refresh() {
+  //   const res = await client.getProductById(this.id);
   //   if (res != null) {
-  //     json = res.data;
+  //     this.json = res.data;
   //   }
   // }
-  //
-  toString() {
+
+  toString(): string {
     return this.json.toString();
   }
   //
-  // String getPriceDiscountPercent() => _getDiscountPercent(
-  //     originPrice: compareAtPrice,
-  //     discountPrice: price,
-  // );
+
+  get getPriceDiscountPercent(): string {
+    return this._getDiscountPercent(this.compareAtPrice, this.price);
+  }
+
+  // getPriceGroupDiscountPercent(){
   //
-  // String getPriceGroupDiscountPercent() => _getDiscountPercent(
+  // }
+  //
+  // String  => _getDiscountPercent(
   //     originPrice: compareAtPrice,
   //     discountPrice: priceGroup,
   // );
   //
-  // String _getDiscountPercent({
-  //   @required originPrice,
-  //   @required discountPrice,
-  // }) {
-  //   var discountPercent = (originPrice - discountPrice) / originPrice;
-  //   discountPercent = discountPercent * 100;
-  //   return discountPercent.toStringAsFixed(0);
-  // }
+  _getDiscountPercent(originPrice: number, discountPrice: number): string {
+    var discountPercent = (originPrice - discountPrice) / originPrice;
+    discountPercent = discountPercent * 100;
+
+    return discountPercent.toFixed(0);
+  }
   //
   // /// default: 9876543210원
   // String getPriceWithUnit() => formatPrice(price);
@@ -241,30 +260,30 @@ export class Product {
   // /// default: 9876543210원 (same as price)
   // String getPriceGroupWithUnit() => formatPrice(priceGroup);
   //
-  // String getImageEye() {
-  //   if (imagesSrc != null && imagesSrc.length >= 2) {
-  //     return imagesSrc[1];
-  //   } else {
-  //     return imageSrc;
-  //   }
-  // }
+  get getImageEye(): string {
+    if (this.imagesSrc != null && this.imagesSrc.length >= 2) {
+      return this.imagesSrc[1];
+    } else {
+      return this.imageSrc;
+    }
+  }
   //
-  isActive() {
+  isActive(): boolean {
     return this.status === 'active';
   }
   //
-  isOutOfStock() {
+  isOutOfStock(): boolean {
     return this.status === 'out_of_stock';
   }
-  isDraft() {
+  isDraft(): boolean {
     return this.status === 'draft';
   }
-  isLens() {
+  isLens(): boolean {
     return (
       this.productType === '1 month' || this.json['product_type'] === '1 day'
     );
   }
-  isEtc() {
+  isEtc(): boolean {
     return this.productType == 'ETC';
   }
   getLensType() {
@@ -279,7 +298,7 @@ export class Product {
         return '';
     }
   }
-  getColorKr() {
+  getColorKr(): string {
     const _allColors = {
       black: '블랙',
       clear: '투명',
@@ -367,25 +386,17 @@ export class Products {
     });
   }
 
-  // getter 함수의 경우 파라미터를 받을 수 없음. (캐싱때문인거같음)
   byId(id: number) {
-    const product = this._productsById[id];
-
-    if (product) {
-      return product;
-    } else {
-      const newProduct = api.products.byId(id);
-      return newProduct;
-    }
+    return this._productsById[id];
   }
   set setProduct(product: Product) {
     this._productsById[product.id] = product;
   }
 
-  byHandle(handle: string) {
-    _.find(this.products, (p) => {
-      return p.handle === handle;
-    });
-    return '';
-  }
+  // byHandle(handle: string) {
+  //   _.find(this.products, (p) => {
+  //     return p.handle === handle;
+  //   });
+  //   return '';
+  // }
 }

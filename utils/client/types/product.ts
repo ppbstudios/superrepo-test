@@ -36,17 +36,7 @@ export interface JsonProduct {
   review_number: string;
   lens_description: string;
   lens_count: number;
-  color:
-    | 'black'
-    | 'clear'
-    | 'brown'
-    | 'green'
-    | 'blue'
-    | 'gray'
-    | 'purple'
-    | 'pink'
-    | 'twotone'
-    | 'solid';
+  color: Color;
   pack_count: number;
   set_product_ids: [];
   web_only: boolean;
@@ -66,7 +56,7 @@ export interface JsonProduct {
   lens_pattern_image: string;
 }
 
-interface Image {
+export interface Image {
   id: number;
   ppb_product_id: number;
   position: number;
@@ -89,3 +79,15 @@ interface DetailImage {
   size256: string;
   overlays: [];
 }
+
+export type Color =
+  | 'black'
+  | 'clear'
+  | 'brown'
+  | 'green'
+  | 'blue'
+  | 'gray'
+  | 'purple'
+  | 'pink'
+  | 'twotone'
+  | 'solid';
