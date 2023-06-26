@@ -15,7 +15,8 @@
     "axios": "^1.4.0",
     "lodash": "^4.17.21",
     "nuxt": "^3.5.2",
-    "qs": "^6.11.2"
+    "qs": "^6.11.2",
+    "snakecase-keys": "^5.4.6"
   },
   "dependencies": {}
 }

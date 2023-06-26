@@ -1493,7 +1493,8 @@ export class Product {
 
   compareAtPrice(packCount:number = 1, currency:string = 'krw') {
     const v0 = this.json.variants[0] || {};
-    return v0[`compare_at_price_${packCount}`] * packCount;
+    const price = v0[`compare_at_price_${currency}`] || v0[`price1_${currency}`];
+    return price * packCount;
   }
 
   price(packCount:number = 1, currency:string = 'krw', priceGroupId:any = null) {
