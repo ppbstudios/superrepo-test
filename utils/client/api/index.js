@@ -1,6 +1,6 @@
 import axios from 'axios';
 import qs from 'qs';
-import { Product, Products } from '~/utils/client/model/product';
+import {Product, Products} from '~/utils/client/model/product';
 
 axios.defaults.withCredentials = true;
 
@@ -22,12 +22,6 @@ function toq(params) {
   });
 }
 
-const storeIdsByAppKey = {
-  chuulens: ['chuulens'],
-  customer: ['hapakristinkr'],
-  winc: [''], // TODO
-};
-
 const myAxios = axios.create({
   baseURL: baseURL(),
   // baseURL: 'http://localhost',
@@ -42,26 +36,25 @@ const api = {
     return myAxios.get('/v1/meta');
   },
   products: {
-    list: async (q = null) => {
-      q ||= {};
-      q['store_id_in'] = storeIdsByAppKey[appKey];
+    listChuulens: async (q = {}, page = 1, limit = 10) => {
+      const params = { q, page, limit };
+      params.q['store_id_in'] = ['chuulens'];
       try {
-        const res  = await myAxios.get(`/v1/ppb/products?${toq(q)}`);
-        const products = new Products(res.data.records);
-        return products;
+        const res  = await myAxios.get(`/v1/ppb/products?${toq(params)}`);
+        console.log(res.data.records);
+        return new Products(res.data.records);
       } catch (e) {
         return e;
       }
     },
-    listChuulens: async (params = null) => {
-      params ||= {};
-      params.q ||= {};
-      params.q['store_id_in'] = ['chuulens'];
+    listHapakr: async (q = {}, page = 1, limit = 10) => {
+      const params = { q, page, limit };
+      params.q['store_id_in'] = ['hapakristinkr'];
       try {
         const res  = await myAxios.get(`/v1/ppb/products?${toq(params)}`);
-        console.log(res.data);
-        const products = new Products(res.data.records);
-        return products;
+        // console.log(res.data.records);
+        console.log(JSON.stringify(res.data.records[0], null, 2));
+        return new Products(res.data.records);
       } catch (e) {
         return e;
       }
@@ -74,17 +67,67 @@ const api = {
         return e;
       }
     },
+    byHandle: async (store_id, handle) => {
+      try {
+        const res  = await myAxios.get(`/v1/ppb/products?q[store_id_eq]=${store_id}&q[handle_eq]=${handle}`);
+        if (res.data.total === 1) {
+          return new Product(res.data.records[0]);
+        } else {
+          return null;
+        }
+      } catch (e) {
+        return e;
+      }
+    },
   },
-  franchises: {},
-  collections: {},
+  franchises: {
+    list: async (params = {}) => {
+      try {
+        const res  = await myAxios.get(`/v1/ppb/hapakr/franchises-public?${toq(params)}`);
+        console.log(res.data.records);
+        return new Franchises(res.data.records);
+      } catch (e) {
+        return e;
+      }
+    },
+  },
+  collections: {
+    listHapakr: async (q = {}, page = 1, limit = 10) => {
+      const params = { q, page, limit };
+      params.q['store_id_in'] = ['hapakristinkr'];
+      try {
+        const res  = await myAxios.get(`/v1/ppb/collections?${toq(params)}`);
+        console.log(res.data.records);
+        return new Collections(res.data.records);
+      } catch (e) {
+        return e;
+      }
+    },
+    byId: async (id) => {
+      try {
+        const res  = await myAxios.get(`/v1/ppb/collections/${id}`);
+        return new Collection(res.data);
+      } catch (e) {
+        return e;
+      }
+    },
+  },
   reviews: {
-    list: (page = 1, limit = 10) => {},
+    list: async (q = {}, page = 1, limit = 10) => {},
   },
-  myCoupons: {},
-  myOrders: {},
-  myReviews: {},
-  getCart: () => {},
-  getMe: () => {},
+  myCoupons: {
+    list: async (q = {}, page = 1, limit = 10) => {},
+  },
+  myOrders: {
+    list: async (q = {}, page = 1, limit = 10) => {},
+  },
+  myReviews: {
+    list: async (q = {}, page = 1, limit = 10) => {},
+  },
+  cart: {
+    
+  },
+  me: {},
 };
 
 export default api;
