@@ -18,7 +18,7 @@ console.log(cart.cartToken);
 console.log(cart.appKey);
 console.log(cart.currency);
 console.log(cart);
-const cart2 = await client.api.cart.addItem(cart.cartToken, 8747, 1102100, 1, 1);
+const cart2 = await client.api.cart.addItem(cart.cartToken, 11021, 1102100, 1, 1);
 console.log(cart2);
 
 console.log('----product----');
