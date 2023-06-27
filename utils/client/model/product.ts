@@ -1508,32 +1508,17 @@ export class Product {
 }
 
 export class Products {
-  // private json:any[];
-  // private products:Product[];
+  private json:any;
+  private _products:Product[];
 
-  constructor(json:Product[]) {
-    // this.json = json;
-    // _.each(this.json, (item) => {
-    //   this.products.push(new Product(item));
-    // });
+  constructor(json:any) {
+    this.json = json;
+    this._products = _.map(this.json || [], (item) => {
+      return new Product(item);
+    });
   }
 
-  // get byId (id:number)  {
-  //   const product = _.find(this.products, (p) => {
-  //     return p.id === id;
-  //   });
-  //
-  //   if (product) {
-  //     return product;
-  //   } else {
-  //     const newProduct = api.products.byId(id);
-  //     return newProduct;
-  //   }
-  // }
-  //
-  // get byHandle(handle:string)  {
-  //    _.find(this.products, (p) => {
-  //     return p.handle === handle;
-  //   });
-  // }
+  get items(): Product[] {
+    return this._products;
+  }
 }
