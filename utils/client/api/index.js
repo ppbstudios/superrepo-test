@@ -123,20 +123,6 @@ const api = {
       }
     },
   },
-  // pagination 사용 불가
-  franchises: {
-    list: (params = {}) => {
-      return myAxios.get(`/v1/ppb/hapakr/franchises-public?${toq(params)}`);
-    },
-    addFavorite: (id) => {
-      return myAxios.put(`/v1/ppb/hapakr/franchises-public/${id}/add_favorite`);
-    },
-    removeFavorite: (id) => {
-      return myAxios.put(
-        `/v1/ppb/hapakr/franchises-public/${id}/remove_favorite`
-      );
-    },
-  },
   collections: {
     listHapakr: (q = {}, page = 1, limit = 10) => {
       const params = { q, page, limit };
@@ -358,6 +344,20 @@ const api = {
         .then(({ data }) => {
           return data;
         });
+    },
+  },
+  // pagination 사용 불가
+  franchises: {
+    list: (params = {}) => {
+      return myAxios.get(`/v1/ppb/hapakr/franchises-public?${toq(params)}`);
+    },
+    addFavorite: (id) => {
+      return myAxios.put(`/v1/ppb/hapakr/franchises-public/${id}/add_favorite`);
+    },
+    removeFavorite: (id) => {
+      return myAxios.put(
+        `/v1/ppb/hapakr/franchises-public/${id}/remove_favorite`
+      );
     },
   },
 };
