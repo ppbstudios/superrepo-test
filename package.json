@@ -3,7 +3,11 @@
   "private": true,
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev",
+    "dev": "yarn dev-chuulens",
+    "dev-cache-chuulens": "VUE_APP_APP_KEY=chuulens VUE_APP_API_HOST=https://dev.theppbs.com node ./scripts/create-cache.js",
+    "dev-chuulens": "VUE_APP_APP_KEY=chuulens nuxt dev",
+    "dev-winc": "VUE_APP_APP_KEY=winc nuxt dev",
+    "dev-customer": "VUE_APP_APP_KEY=customer nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
@@ -18,5 +22,7 @@
     "qs": "^6.11.2",
     "snakecase-keys": "^5.4.6"
   },
-  "dependencies": {}
+  "dependencies": {
+    "-": "^0.0.1"
+  }
 }
